@@ -1,0 +1,4 @@
+---
+title: Toggl CLI
+emoji: ⏱️
+---

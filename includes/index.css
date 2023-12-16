@@ -1,0 +1,141 @@
+body {
+    font-size: 22px;
+    font-family: 'Rubik', sans-serif;
+    color: var(--foreground-color);
+    background-color: var(--background-color);
+}
+
+* {
+    margin: 0px;
+}
+
+pre {
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+    white-space: -pre-wrap;
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+    padding: 20px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Kalnia', serif;
+    color: var(--title-color);
+}
+
+a {
+    text-decoration: none;
+    color: var(--link-color);
+}
+
+body {
+    --background-color: #ffffff;
+    --foreground-color: #4c4f69;
+    --title-color: #232535;
+    --link-color: #ff6700;
+    --page-margin: 60px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    line-height: 1.5;
+}
+
+.visible {
+    display: inherit;
+}
+
+.invisible {
+    display: none;
+}
+
+.italic {
+    font-style: italic;
+}
+
+.page {
+    color: var(--link-color);
+}
+
+h1 {
+    line-height: 1.2;
+    border-bottom: 1px solid var(--foreground-color);
+    padding-bottom: 15px;
+}
+
+h2 {
+    margin: 30px 0 10px 0;
+    line-height: 1.2;
+}
+
+nav {
+    gap: 20px;
+    display: flex;
+    font-size: 0.8em;
+    margin: 10px 0 10px var(--page-margin);
+    width: max-content;
+    justify-content: space-between;
+}
+
+nav p {
+    margin: auto;
+    font-size: 70px;
+    filter: grayscale(1);
+}
+
+nav p:hover {
+    filter: grayscale(1) drop-shadow(0px 0px 10px var(--link-color))
+}
+
+nav ul {
+    padding: 0;
+}
+
+nav ul li {
+    list-style: none;
+    font-size: 13px;
+    padding: 1px 3px;
+    width: max-content;
+    border-radius: 3px;
+}
+
+nav ul li:hover {
+    background: var(--link-color);
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--foreground-color)
+}
+
+nav ul li:hover a {
+    color: var(--background-color);
+}
+
+article {
+    max-width: 900px;
+    margin: 0 auto 40px auto;
+}
+
+footer {
+    margin-top: auto;
+    margin-left: var(--page-margin);
+    margin-right: var(--page-margin);
+    margin-bottom: 20px;
+    font-size: 0.8em;
+}
+
+footer p {
+    float: right;
+    margin-top: 8px;
+}
+
+@media(max-width: 600px) {
+    body {
+        --page-margin: 30px
+    }
+
+    article {
+        max-width: 900px;
+        margin: 0 var(--page-margin) 40px var(--page-margin);
+    }
+}

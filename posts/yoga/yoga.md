@@ -1,0 +1,4 @@
+---
+title: Ashtanga Yoga
+emoji: 🧘🏽
+---
