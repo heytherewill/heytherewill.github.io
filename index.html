@@ -1,238 +1,284 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Music&family=Noto+Sans&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#1e2030">
+    <title>will@heytherewill</title>
     <style>
-        body {
-            font-family: 'Noto Sans';
-            font-size: 22px;
-            color: var(--foreground-color);
-            background-color: var(--background-color);
-        }
-        * {
-            margin: 0px;
-        }
-        pre {
-            white-space: pre-wrap;
-            white-space: -moz-pre-wrap;
-            white-space: -pre-wrap;
-            white-space: -o-pre-wrap;
-            word-wrap: break-word;
-            padding: 20px;
+      @font-face {
+        font-family: "JetBrainsMono Nerd Font";
+        src: url("assets/JetBrainsMonoNerdFontMono-Regular.ttf") format("truetype");
+        font-display: swap;
+      }
+
+      :root {
+        --base: #1e2030;
+        --mantle: #181926;
+        --surface: #24273a;
+        --overlay: #6e738d;
+        --subtext: #a5adcb;
+        --text: #cad3f5;
+        --blue: #8aadf4;
+        --mauve: #c6a0f6;
+        --green: #a6da95;
+        --peach: #f5a97f;
+        --red: #ed8796;
+        --prompt-color: #7dc4e4;
+        --titlebar-border: #36394e;
+      }
+
+      body.theme-light {
+        --base: #eff1f5;
+        --mantle: #e6e9ef;
+        --surface: #dce0e8;
+        --overlay: #8c8fa1;
+        --subtext: #6c6f85;
+        --text: #4c4f69;
+        --blue: #1e66f5;
+        --mauve: #8839ef;
+        --green: #40a02b;
+        --peach: #fe640b;
+        --red: #d20f39;
+        --prompt-color: #1e66f5;
+        --titlebar-border: #bcc0cc;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        background: var(--mantle);
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        background: var(--base);
+        color: var(--text);
+        font: 36px / 1.65 "JetBrainsMono Nerd Font", ui-monospace, SFMono-Regular,
+          Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      }
+
+      .window {
+        display: flex;
+        width: 100vw;
+        height: 100vh;
+        flex-direction: column;
+        overflow: hidden;
+        background: var(--base);
+      }
+
+      .titlebar {
+        display: flex;
+        height: 48px;
+        flex: 0 0 auto;
+        align-items: center;
+        padding: 0 17px;
+        border-bottom: 1px solid var(--titlebar-border);
+        background: color-mix(in srgb, var(--surface) 84%, var(--mantle));
+        user-select: none;
+      }
+
+      .traffic-lights {
+        display: flex;
+        gap: 8px;
+      }
+
+      .traffic-lights span {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+      }
+
+      .traffic-lights span:nth-child(1) {
+        background: #ed8796;
+      }
+
+      .traffic-lights span:nth-child(2) {
+        background: #eed49f;
+      }
+
+      .traffic-lights span:nth-child(3) {
+        background: #a6da95;
+      }
+
+      .title {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        color: var(--subtext);
+        font-size: 13px;
+      }
+
+      #terminal {
+        flex: 1;
+        overflow-y: auto;
+        padding: 25px clamp(18px, 4vw, 42px);
+        scrollbar-color: var(--overlay) transparent;
+      }
+
+      .line {
+        min-height: 1.25em;
+        line-height: 1.25;
+        overflow-wrap: anywhere;
+        white-space: pre-wrap;
+      }
+
+      .command {
+        display: block;
+      }
+
+      .prompt {
+        white-space: pre;
+      }
+
+      .prompt-decoration,
+      .prompt-path {
+        color: var(--prompt-color);
+      }
+
+      .command-prefix {
+        margin-right: 1ch;
+      }
+
+      .command-text {
+        color: var(--text);
+        white-space: pre-wrap;
+      }
+
+      .output {
+        margin: 0 0 24px;
+      }
+
+      .command-complete {
+        margin-bottom: 44px;
+      }
+
+      .muted {
+        color: var(--subtext);
+      }
+
+      .directory {
+        color: var(--blue);
+        font-weight: 700;
+      }
+
+      .file {
+        color: var(--mauve);
+      }
+
+      .executable {
+        color: var(--green);
+      }
+
+      .error {
+        color: var(--red);
+        line-height: 1.25;
+      }
+
+      .accent {
+        color: var(--peach);
+      }
+
+      .file-link {
+        border-bottom: 1px dotted transparent;
+        color: inherit;
+        cursor: pointer;
+        text-decoration: none;
+      }
+
+      .file-link:hover,
+      .file-link:focus-visible {
+        border-color: currentColor;
+        outline: none;
+      }
+
+      .input-row {
+        min-height: 0;
+        line-height: 1.25;
+      }
+
+      #prompt {
+        display: block;
+      }
+
+      .command-input-line {
+        display: flex;
+        align-items: baseline;
+      }
+
+      #command-input {
+        min-width: 1ch;
+        flex: 1;
+        border: 0;
+        outline: 0;
+        padding: 0;
+        background: transparent;
+        caret-color: var(--mauve);
+        color: var(--text);
+        font: inherit;
+      }
+
+      #command-input::placeholder {
+        color: transparent;
+      }
+
+      .hint {
+        margin-top: 7px;
+        color: var(--overlay);
+        font-size: 24px;
+      }
+
+      @media (max-width: 560px) {
+        #terminal {
+          padding: 20px;
+          font-size: 14px;
         }
 
-        a {
-            color: var(--link-color);
+        .title {
+          font-size: 12px;
         }
-
-        a:visited {
-            color: var(--visited-link-color);
-        }
-
-        body.dark {
-            --background-color: #363a4f;
-            --foreground-color: #cad3f5;
-            --link-color: #8aadf4;
-            --visited-link-color: #c6a0f6;
-        }
-
-        body.light {
-            --background-color: #dce0e8;
-            --foreground-color: #4c4f69;
-            --link-color: #1e66f5;
-            --visited-link-color: #8839ef;
-        }
-
-        .visible {
-            display: inherit;
-        }
-
-        .invisible {
-            display: none;
-        }
+      }
     </style>
-    <title>Will</title>
-</head>
-<body class="dark"><pre id="portugues"><h4># Oi, eu sou o Will 👋🏽</h4>
-* Nascido no <a href="#portugues">Brasil</a>.
-* Morando na <a href="#italiano">Itália</a>.
-* Disponível em <a href="#english">inglês</a>.
+  </head>
+  <body>
+    <main class="window" aria-label="Terminal navigation">
+      <header class="titlebar">
+        <div class="traffic-lights">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <span class="title">will — pwsh — 80×24</span>
+      </header>
 
-<h4># Coisas que eu faço</h4>
-* <a href="https://ashtanga.heytherewill.com/">Ashtanga Yoga</a>¹.
-* <a href="https://pixels.heytherewill.com/">Pixel art ruim</a>.
-* <a href="https://github.com/heytherewill/">Escrever código</a>.
-* <a href="https://code.heytherewill.com/">Escrever sobre código</a>.
-* <a href="https://play.google.com/store/apps/details?id=com.heytherewill.archenemy">Jogar Magic em mesa de cozinha.</a>
-* Quebra-cabeças 3D.
-* Tirar fotinhos.
-* Trabalhar para a <a href="https://spotify.com/">empresa de Música</a>².
+      <section id="terminal" aria-live="polite">
+        <div id="history"></div>
 
-<h4># Salves</h4>
-* <a href="mailto:heytherewill@gmail.com">Correio Eletrônico</a>™️.
-* <a href="https://www.linkedin.com/in/heytherewill/">Facebook de coach</a>.
+        <form id="terminal-form" class="input-row" autocomplete="off">
+          <label id="prompt" class="prompt" for="command-input">
+            <span class="prompt-decoration">┌ </span>
+            <span class="prompt-path">~</span>
+          </label>
+          <div class="command-input-line">
+            <span class="prompt-decoration command-prefix">└ $</span>
+            <input
+              id="command-input"
+              type="text"
+              spellcheck="false"
+              autofocus
+              aria-label="Terminal command"
+              autocomplete="off"
+            >
+          </div>
+        </form>
 
---------------
+        <div class="hint">Type <span class="accent">help</span> to get started</div>
+      </section>
+    </main>
 
-¹ Faça um favor para si mesmo e ignore gente flexível em rede social e se permita praticar. Não existem requerimentos, Yoga é pra todos.
-
-² Eu também já trabalhei na <a href="https://pspdfkit.com">empresa de PDF</a> e na <a href="https://toggl.com">empresa de Marcar Tempo</a>.
-
-<a id="mode-name-portugues" href="#light">Clarin</a>.
-</pre><pre id="english"><h4># Hey there, I'm Will 👋🏽</h4>
-* Born in <a href="#portugues">Brazil</a>.
-* Living in <a href="#italiano">Italy</a>.
-* Available in <a href="#english">english</a>.
-
-<h4># Things I do</h4>
-* <a href="https://ashtanga.heytherewill.com/">Ashtanga Yoga</a>¹.
-* <a href="https://pixels.heytherewill.com/">Bad Pixel art</a>.
-* <a href="https://github.com/heytherewill/">Write code</a>.
-* <a href="https://code.heytherewill.com/">Write about code</a>.
-* <a href="https://play.google.com/store/apps/details?id=com.heytherewill.archenemy">Kitchen table MtG.</a>
-* Twisty Puzzles.
-* Take Pictures.
-* Work for <a href="https://spotify.com/">Music company</a>².
-
-<h4># Talk to me</h4>
-* <a href="mailto:heytherewill@gmail.com">Electronic Mail</a>™️.
-* <a href="https://www.linkedin.com/in/heytherewill/">Corporate Facebook</a>.
-
---------------
-
-¹ Please ignore the flexible people on social media and go practice. Yoga is for all of us.
-
-² I also worked for <a href="https://pspdfkit.com">PDF company</a> and <a href="https://toggl.com">Time Tracking company</a>.
-
-<a id="mode-name-english" href="#light">light mode</a>.
-</pre>
-<pre id="italiano"><h4># Ciao, sono Will 👋🏽</h4>
-* Natto in <a href="#portugues">Brasile</a>.
-* Vivo in <a href="#italiano">Italia</a>.
-* Disponibile in <a href="#english">Inglese</a>.
-
-<h4># Cosa faccio</h4>
-* <a href="https://ashtanga.heytherewill.com/">Ashtanga Yoga</a>¹.
-* <a href="https://pixels.heytherewill.com/">Pixel art (schifa)</a>.
-* <a href="https://code.heytherewill.com/">Sviluppo software</a>.
-* <a href="https://code.heytherewill.com/">Scrivo sullo sviluppo di software</a>.
-* <a href="https://play.google.com/store/apps/details?id=com.heytherewill.archenemy">Magic casuale.</a>
-* Speedcubing.
-* Scatto l'otturatore della mia fotocamera.
-* Lavoro per l'<a href="https://spotify.com/">azienda Musicale</a>².
-
-<h4># Per fare due chiacchiere con me</h4>
-* <a href="mailto:heytherewill@gmail.com">Posta Eletronica</a>™️.
-* <a href="https://www.linkedin.com/in/heytherewill/">LinkedIn</a>.
-
---------------
-
-¹ Fatti un favore ed ignora la gente flessibile nei social. Lo Yoga è per tutti.
-
-² Ho anche lavorato per l'<a href="https://pspdfkit.com">azienda di PDF</a> e per l'<a href="https://toggl.com">azienda di Time Tracking</a>.
-
-<a id="mode-name-italiano" href="#light">Chiaro</a>.
-</pre>
-            
-<script>
-(function() {
-    const body = document.querySelector('body');
-    const modeNameElements = {
-        portugues: document.querySelector('#mode-name-portugues'),
-        italiano: document.querySelector('#mode-name-italiano'),
-        english: document.querySelector('#mode-name-english')
-    }
-    const portugues = document.querySelector('#portugues');
-    const italiano = document.querySelector('#italiano');
-    const english = document.querySelector('#english');
-
-    const languages = ['english', 'italiano', 'portugues'];
-
-    const darkModeStrings = {
-        portugues: 'mais escurin',
-        italiano: 'mi piace il buio',
-        english: 'i like it darker'
-    }
-
-    const lightModeStrings = {
-        portugues: "mais clarin",
-        italiano: 'troppo scuro, dai',
-        english: 'i like it brighter'
-    }
-
-    let currentLanguage = 'english';
-
-    function handleHashChanges() {
-        if (location.hash === '#dark') {
-            body.classList.add('dark');
-            body.classList.remove('light');
-            languages.forEach(language => {
-                const modeName = modeNameElements[language];
-                modeName.innerHTML = lightModeStrings[language];
-                modeName.href = '#light'; 
-            });
-        }
-
-        if (location.hash === '#light') {
-            body.classList.add('light')
-            body.classList.remove('dark')
-            languages.forEach(language => {
-                const modeName = modeNameElements[language];
-                modeName.innerHTML = darkModeStrings[language];
-                modeName.href = '#dark'; 
-            });
-        }
-
-        if (location.hash === '#english') {
-            currentLanguage = 'english';
-            portugues.classList.add('invisible');
-            portugues.classList.remove('visible');
-            italiano.classList.add('invisible');
-            italiano.classList.remove('visible');
-            english.classList.add('visible');
-            english.classList.remove('invisible');
-        }
-        
-        if (location.hash === '#italiano') {
-            portugues.classList.add('invisible');
-            portugues.classList.remove('visible');
-            english.classList.add('invisible');
-            english.classList.remove('visible');
-            italiano.classList.add('visible');
-            italiano.classList.remove('invisible');
-            currentLanguage = 'english';
-        }
-        
-        if (location.hash === '#portugues') {
-            italiano.classList.add('invisible');
-            italiano.classList.remove('visible');
-            english.classList.add('invisible');
-            english.classList.remove('visible');
-            portugues.classList.add('visible');
-            portugues.classList.remove('invisible');
-            currentLanguage = 'english';
-        }
-    }
-
-    window.onhashchange = handleHashChanges;
-    handleHashChanges();
-
-    const originalHash = location.hash;
-    if (originalHash != "#italiano" && originalHash != "#portugues") {
-        window.location.hash = '#english';
-        handleHashChanges();
-    }
-
-    if (originalHash != "#light") {
-        window.location.hash = '#dark';
-        handleHashChanges();
-    }
-})()
-</script>
-</body>
+    <script src="index.js"></script>
+  </body>
 </html>
