@@ -438,7 +438,7 @@ Android Engineer @ Spotify.`;
         print(renderDirectory(target.node));
       }
     } else if (name === "tree") {
-      print(renderTree(cwdNode()));
+      print(renderTree(cwdNode()), "tree-output");
     } else if (name === "cd") {
       const target = resolve(arg || "~");
 
