@@ -16,7 +16,6 @@ Android Engineer @ Spotify.`;
   pwd                print working directory
   theme <option>     change the colour theme
   clear, cls         clear the terminal
-  sudo               request elevated privileges
   help               show this message`;
 
   const tree = {
@@ -93,6 +92,7 @@ Android Engineer @ Spotify.`;
   const input = document.querySelector("#command-input");
   const prompt = document.querySelector("#prompt");
   const terminal = document.querySelector("#terminal");
+  const autocomplete = document.querySelector("#autocomplete");
   const body = document.body;
 
   let cwd = [];
@@ -101,6 +101,22 @@ Android Engineer @ Spotify.`;
   let draftCommand = "";
 
   const themeStorageKey = "will-terminal-theme";
+  const commands = [
+    "whoami",
+    "neofetch",
+    "ls",
+    "tree",
+    "cd",
+    "cat",
+    "find",
+    "open",
+    "pwd",
+    "theme",
+    "clear",
+    "cls",
+    "help",
+  ];
+  const mobileViewport = window.matchMedia("(max-width: 560px)");
   const platform = (
     navigator.userAgentData?.platform ||
     navigator.platform ||
@@ -169,7 +185,37 @@ Android Engineer @ Spotify.`;
   }
 
   function scrollDown() {
-    terminal.scrollTop = terminal.scrollHeight;
+    const scroll = () => {
+      terminal.scrollTop = terminal.scrollHeight;
+    };
+
+    scroll();
+    requestAnimationFrame(() => {
+      scroll();
+      requestAnimationFrame(scroll);
+    });
+  }
+
+  function updateAutocomplete() {
+    const query = input.value.trimStart().toLowerCase();
+    const isCommand = query && !query.includes(" ");
+    const matches = isCommand
+      ? commands.filter((command) => command.startsWith(query)).slice(0, 6)
+      : [];
+
+    autocomplete.hidden = !mobileViewport.matches || !matches.length;
+    input.setAttribute("aria-expanded", String(!autocomplete.hidden));
+
+    if (!autocomplete.hidden) {
+      autocomplete.innerHTML = matches
+        .map(
+          (command) =>
+            `<button class="autocomplete-option" type="button" role="option" data-suggestion="${command}">${command}</button>`,
+        )
+        .join("");
+    } else {
+      autocomplete.innerHTML = "";
+    }
   }
 
   function currentTheme() {
@@ -458,6 +504,7 @@ Android Engineer @ Spotify.`;
     const value = input.value;
     input.value = "";
     draftCommand = "";
+    updateAutocomplete();
     execute(value);
   });
 
@@ -465,6 +512,19 @@ Android Engineer @ Spotify.`;
     if (historyIndex === commandHistory.length) {
       draftCommand = input.value;
     }
+
+    updateAutocomplete();
+  });
+
+  autocomplete.addEventListener("click", (event) => {
+    const option = event.target.closest("[data-suggestion]");
+    if (!option) {
+      return;
+    }
+
+    input.value = `${option.dataset.suggestion} `;
+    updateAutocomplete();
+    input.focus();
   });
 
   input.addEventListener("keydown", (event) => {
@@ -526,6 +586,7 @@ Android Engineer @ Spotify.`;
         print(matches, "muted");
       }
 
+      updateAutocomplete();
       scrollDown();
     }
   });
@@ -542,9 +603,12 @@ Android Engineer @ Spotify.`;
 
   terminal.addEventListener("click", () => input.focus());
 
+  mobileViewport.addEventListener("change", updateAutocomplete);
+
   const savedTheme = localStorage.getItem(themeStorageKey);
   setTheme(savedTheme === "light" || savedTheme === "dark" ? savedTheme : "dark");
 
   updatePrompt();
+  execute("tree");
   input.focus();
 })();

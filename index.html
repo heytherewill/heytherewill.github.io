@@ -117,9 +117,9 @@
         flex: 1;
         overflow-y: auto;
         padding-top: 25px;
-        padding-right: max(18px, calc(4vw + env(safe-area-inset-right)));
+        padding-right: max(clamp(18px, 4vw, 42px), env(safe-area-inset-right));
         padding-bottom: max(25px, env(safe-area-inset-bottom));
-        padding-left: max(18px, calc(4vw + env(safe-area-inset-left)));
+        padding-left: max(clamp(18px, 4vw, 42px), env(safe-area-inset-left));
         scrollbar-color: var(--overlay) transparent;
       }
 
@@ -243,6 +243,10 @@
         color: transparent;
       }
 
+      .autocomplete {
+        display: none;
+      }
+
       .hint {
         margin-top: 7px;
         color: var(--overlay);
@@ -284,6 +288,30 @@
         .hint {
           margin-top: 10px;
           font-size: 14px;
+        }
+
+        .autocomplete:not([hidden]) {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-top: 12px;
+        }
+
+        .autocomplete-option {
+          min-height: 44px;
+          border: 1px solid var(--titlebar-border);
+          border-radius: 5px;
+          padding: 0 12px;
+          background: var(--surface);
+          color: var(--text);
+          font: inherit;
+          font-size: 14px;
+          touch-action: manipulation;
+        }
+
+        .autocomplete-option:active {
+          border-color: var(--blue);
+          background: color-mix(in srgb, var(--blue) 20%, var(--surface));
         }
 
         .title {
@@ -332,6 +360,13 @@
               inputmode="text"
             >
           </div>
+          <div
+            id="autocomplete"
+            class="autocomplete"
+            role="listbox"
+            aria-label="Command suggestions"
+            hidden
+          ></div>
         </form>
 
         <div class="hint">Type <span class="accent">help</span> to get started</div>
