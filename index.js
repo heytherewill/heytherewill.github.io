@@ -8,6 +8,7 @@ Android Engineer @ Spotify.`;
   whoami             learn a little about me
   neofetch           show this terminal's system card
   ls [dir]           list files and directories
+  tree               display the current directory tree
   cd <dir>           change directory (use .. for parent)
   cat <file>         read a text file
   find <term>        search the filesystem
@@ -244,6 +245,40 @@ Android Engineer @ Spotify.`;
       .join("    ");
   }
 
+  function renderTree(directory) {
+    const lines = ['<span class="directory">.</span>'];
+
+    function visit(node, prefix = "", relativePath = "") {
+      const entries = Object.entries(node.children);
+
+      entries.forEach(([name, item], index) => {
+        const isLast = index === entries.length - 1;
+        const branch = isLast ? "└── " : "├── ";
+        const className =
+          item.type === "dir"
+            ? "directory"
+            : item.type === "link"
+              ? "executable"
+              : "file";
+        const suffix = item.type === "dir" ? "/" : "";
+        const itemPath = relativePath ? `${relativePath}/${name}` : name;
+        const renderedName =
+          item.type === "link"
+            ? `<a class="file-link ${className}" data-link="${escape(itemPath)}">${escape(name)}</a>`
+            : `<span class="${className}">${escape(name + suffix)}</span>`;
+
+        lines.push(`${prefix}${branch}${renderedName}`);
+
+        if (item.type === "dir") {
+          visit(item, `${prefix}${isLast ? "    " : "│   "}`, itemPath);
+        }
+      });
+    }
+
+    visit(directory);
+    return lines.join("\n");
+  }
+
   function whoami() {
     return escape(tree.children["about.txt"].content);
   }
@@ -356,6 +391,8 @@ Android Engineer @ Spotify.`;
       } else {
         print(renderDirectory(target.node));
       }
+    } else if (name === "tree") {
+      print(renderTree(cwdNode()));
     } else if (name === "cd") {
       const target = resolve(arg || "~");
 
