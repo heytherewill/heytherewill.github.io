@@ -65,7 +65,7 @@
       .window {
         display: flex;
         width: 100vw;
-        height: 100vh;
+        min-height: 100dvh;
         flex-direction: column;
         overflow: hidden;
         background: var(--base);
@@ -116,7 +116,10 @@
       #terminal {
         flex: 1;
         overflow-y: auto;
-        padding: 25px clamp(18px, 4vw, 42px);
+        padding-top: 25px;
+        padding-right: max(18px, calc(4vw + env(safe-area-inset-right)));
+        padding-bottom: max(25px, env(safe-area-inset-bottom));
+        padding-left: max(18px, calc(4vw + env(safe-area-inset-left)));
         scrollbar-color: var(--overlay) transparent;
       }
 
@@ -184,16 +187,29 @@
       }
 
       .file-link {
-        border-bottom: 1px dotted transparent;
+        display: inline-flex;
+        min-width: 44px;
+        min-height: 44px;
+        align-items: center;
+        justify-content: center;
+        padding: 0 0.35ch;
+        border: 1px dotted transparent;
+        border-radius: 4px;
         color: inherit;
         cursor: pointer;
         text-decoration: none;
+        touch-action: manipulation;
       }
 
       .file-link:hover,
-      .file-link:focus-visible {
+      .file-link:focus-visible,
+      .file-link:active {
         border-color: currentColor;
         outline: none;
+      }
+
+      .file-link:active {
+        background: color-mix(in srgb, currentColor 15%, transparent);
       }
 
       .input-row {
@@ -220,6 +236,7 @@
         caret-color: var(--mauve);
         color: var(--text);
         font: inherit;
+        font-size: max(16px, 1em);
       }
 
       #command-input::placeholder {
@@ -233,13 +250,50 @@
       }
 
       @media (max-width: 560px) {
+        .titlebar {
+          height: 44px;
+          padding-right: max(12px, env(safe-area-inset-right));
+          padding-left: max(12px, env(safe-area-inset-left));
+        }
+
+        .traffic-lights {
+          gap: 6px;
+        }
+
+        .traffic-lights span {
+          width: 10px;
+          height: 10px;
+        }
+
         #terminal {
-          padding: 20px;
+          padding-top: 18px;
+          padding-right: max(16px, env(safe-area-inset-right));
+          padding-bottom: max(20px, env(safe-area-inset-bottom));
+          padding-left: max(16px, env(safe-area-inset-left));
+          font-size: 16px;
+        }
+
+        .output {
+          margin-bottom: 18px;
+        }
+
+        .command-complete {
+          margin-bottom: 28px;
+        }
+
+        .hint {
+          margin-top: 10px;
           font-size: 14px;
         }
 
         .title {
           font-size: 12px;
+        }
+      }
+
+      @media (max-width: 400px) {
+        .title {
+          display: none;
         }
       }
     </style>
@@ -269,9 +323,13 @@
               id="command-input"
               type="text"
               spellcheck="false"
+              autocapitalize="none"
+              autocorrect="off"
               autofocus
               aria-label="Terminal command"
               autocomplete="off"
+              enterkeyhint="send"
+              inputmode="text"
             >
           </div>
         </form>
